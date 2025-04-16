@@ -52,7 +52,7 @@ Ensure you have the following installed on your system:
 ### Steps
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/dynamic-form-builder.git
+   git clone https://github.com/Shareiar-shams/Online-Feedback-Collection.git
    ```
 
 2. Navigate to the project directory:
