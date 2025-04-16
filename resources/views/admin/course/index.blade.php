@@ -70,7 +70,7 @@
 					                    </button>
 					                    <div class="dropdown-menu" role="menu">
 					                    	
-
+											<a class="dropdown-item" href="{{ route('course.edit') }}">Edit</a>
 					                      	<a class="dropdown-item" href="#" onclick="
 
 		                            			if(confirm('Are you Want to Uproot this!'))
