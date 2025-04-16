@@ -201,199 +201,202 @@
     <!-- feedback form-->
     <section class="content-section" id="form">
         <div class="container px-4 px-lg-5">
-            <div class="form-wrapper">
-                <h1 class="title">{{$form->formName}}</h1>
-                <p class="subtitle">{{ isset($form->formSubtitle) ? $form->formSubtitle : ''}}</p>
-                @php
-                    $fields = json_decode($form->data); // Decode the JSON string
+            @if (!empty($form))
+                <div class="form-wrapper">
+                    <h1 class="title">{{ isset($form->formName) ? $form->formName : '' }}</h1>
+                    <p class="subtitle">{{ isset($form->formSubtitle) ? $form->formSubtitle : ''}}</p>
+                    @php
+                        $fields = json_decode($form->data); // Decode the JSON string
 
-                @endphp
-                <form class="contact-form" id="dynamicForm" enctype="multipart/form-data">
-                    @csrf
-                    @foreach ($fields as $field)
-                        @switch($field->type)
-                            @case('header')
-                                
-                                <{{$field->subtype}} class="{{ isset($field->className) ? $field->className : '' }}">{{ $field->label }}</{{$field->subtype}}>
-                                @break
+                    @endphp
+                    <form class="contact-form" id="dynamicForm" enctype="multipart/form-data">
+                        @csrf
+                        @foreach ($fields as $field)
+                            @switch($field->type)
+                                @case('header')
+                                    
+                                    <{{$field->subtype}} class="{{ isset($field->className) ? $field->className : '' }}">{{ $field->label }}</{{$field->subtype}}>
+                                    @break
 
-                            @case('text')
-                                <div class="form-row">
-                                    <div class="form-column">
-                                        <label for="{{ $field->name }}" class="form-label">{{ $field->label }}</label>
-                                        <input class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" placeholder="{{ $field->placeholder }}" value="{{ isset($field->value) ? $field->value : ''}}"
-                                          @if($field->required) required @endif 
-                                          @if(isset($field->subtype) && $field->subtype == 'email')   type="{{$field->subtype}}" 
-                                          @elseif(isset($field->subtype) && $field->subtype == 'tel')   type="number" 
-                                          @elseif(isset($field->subtype) && $field->subtype == 'color') 
-                                              type="{{$field->subtype}}" 
-                                          @elseif(isset($field->subtype) && $field->subtype == 'password') 
-                                              type="{{$field->subtype}}" 
-                                          @else
-                                              type="{{$field->type}}"
-                                          @endif
-                                          @if(isset($field->maxlength)) maxlength="{{ $field->maxlength }}" @endif
-                                        >
+                                @case('text')
+                                    <div class="form-row">
+                                        <div class="form-column">
+                                            <label for="{{ $field->name }}" class="form-label">{{ $field->label }}</label>
+                                            <input class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" placeholder="{{ $field->placeholder }}" value="{{ isset($field->value) ? $field->value : ''}}"
+                                            @if($field->required) required @endif 
+                                            @if(isset($field->subtype) && $field->subtype == 'email')   type="{{$field->subtype}}" 
+                                            @elseif(isset($field->subtype) && $field->subtype == 'tel')   type="number" 
+                                            @elseif(isset($field->subtype) && $field->subtype == 'color') 
+                                                type="{{$field->subtype}}" 
+                                            @elseif(isset($field->subtype) && $field->subtype == 'password') 
+                                                type="{{$field->subtype}}" 
+                                            @else
+                                                type="{{$field->type}}"
+                                            @endif
+                                            @if(isset($field->maxlength)) maxlength="{{ $field->maxlength }}" @endif
+                                            >
+                                        </div>
                                     </div>
-                                </div>
-                                @break
-                            @case('autocomplete')
-                                <div class="form-row">
-                                    <div class="form-column">
-                                        <label for="{{ $field->name }}">{{ $field->label }}</label>
-                                        <input type="text" class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" placeholder="{{ $field->placeholder }}" 
-                                            @if($field->required) required @endif> 
+                                    @break
+                                @case('autocomplete')
+                                    <div class="form-row">
+                                        <div class="form-column">
+                                            <label for="{{ $field->name }}">{{ $field->label }}</label>
+                                            <input type="text" class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" placeholder="{{ $field->placeholder }}" 
+                                                @if($field->required) required @endif> 
+                                        </div>
                                     </div>
-                                </div>
-                                @break
-                            @case('file')
-                                <div class="form-row">
-                                    <div class="form-column">
-                                        <label for="{{ $field->name }}">{{ $field->label }}</label>
-                                        <input type="file" class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" 
-                                               @if($field->required) required @endif
-                                               @if($field->multiple) multiple @endif>
-                                    </div>
-                                </div>
-                                @break
-                            @case('date')
-                                <div class="form-row">
-                                    <div class="form-column">
-                                        <label for="{{ $field->name }}">{{ $field->label }}</label>
-                                        <input class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" min="{{ $field->min }}" max="{{ $field->max }}" step="{{ $field->step }}" @if($field->required) required @endif
-                                            @if(isset($field->subtype) && $field->subtype == 'date') type="date" @endif
-                                            @if(isset($field->subtype) && $field->subtype == 'time') type="time" @endif
-                                            @if(isset($field->subtype) && $field->subtype == 'datetime-local') type="datetime-local" @endif
-                                            
-                                        >
-                                    </div>
-                                </div>
-                                @break
-                            @case('file')
-                                <div class="form-row">
-                                    <div class="form-column">
-                                        <label for="{{ $field->name }}">{{ $field->label }}</label>
-                                        <input type="file" class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" 
-                                               @if($field->required) required @endif
-                                               @if($field->multiple) multiple @endif>
-                                    </div>
-                                </div>
-                                @break
-                            @case('textarea')
-                                <div class="form-row">
-                                    <div class="form-column">
-                                        <label for="{{ $field->name }}" class="form-label">{{ strip_tags($field->label) }}</label>
-                                        <textarea class="{{ $field->className }}" id="{{ $field->name }}" value="{{ isset($field->value) ? $field->value : ''}}" name="{{ $field->name }}" rows="{{ isset($field->rows) ? $field->rows : 4 }}" placeholder="{{ $field->placeholder }}" @if($field->required) required @endif></textarea>
-                                    </div>
-                                </div>
-                                @break
-                            @case('number')
-                                <div class="form-row">
-                                    <div class="form-column">
-                                        <label for="{{ $field->name }}">{{ $field->label }}</label>
-                                        <input type="number" class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" 
-                                               min="{{ $field->min }}" max="{{ $field->max }}" 
-                                               @if($field->required) required @endif>
-                                    </div>
-                                </div>
-                                @break
-
-                            @case('paragraph')
-                                @if ($field->subtype == 'blockquote')
-                                    <blockquote class={{ isset($field->className) ? $field->className : '' }}>{{ $field->label }}</blockquote>
-                                @elseif ($field->subtype == 'blockquote')
-                                    <address class={{ isset($field->className) ? $field->className : '' }}>{{ $field->label }}</address>
-                                @elseif ($field->subtype == 'blockquote')
-                                    <canvas class={{ isset($field->className) ? $field->className : '' }}>{{ $field->label }}</canvas>
-                                @elseif ($field->subtype == 'blockquote')
-                                    <output class={{ isset($field->className) ? $field->className : '' }}>{{ $field->label }}</output>
-                                @else
-                                    <p class={{ isset($field->className) ? $field->className : '' }}>{{ $field->label }}</p>
-                                @endif
-                                @break
-                            @case('select')
-                                <div class="form-row">
-                                    <div class="form-column">
-                                        <label for="{{ $field->name }}" class="form-label">{{ strip_tags($field->label) }}</label>
-                                        <select id="{{ $field->name }}" 
-                                                name="{{ $field->name }}@if($field->multiple) [] @endif" 
-                                                class="{{ $field->className }}" 
+                                    @break
+                                @case('file')
+                                    <div class="form-row">
+                                        <div class="form-column">
+                                            <label for="{{ $field->name }}">{{ $field->label }}</label>
+                                            <input type="file" class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" 
                                                 @if($field->required) required @endif
                                                 @if($field->multiple) multiple @endif>
-                                            @foreach ($field->values as $option)
-                                                <option value="{{ $option->value }}" 
-                                                    @if($option->selected) selected @endif>
-                                                    {{ $option->label }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        </div>
                                     </div>
-                                </div>
-                                @break
-                            @case('radio-group')
-                                  <label for="{{ $field->name }}" class="form-label">{{ strip_tags($field->label) }}</label>
-                                  <div class="form-row">
-                                    <div class="form-column">
-                                      @foreach ($field->values as $option)
-                                          <div class="form-check">
-                                              <input class="{{ $field->className }}" 
-                                                     type="radio" 
-                                                     name="{{ $field->name }}" 
-                                                     id="{{ $field->name }}-{{ $loop->index }}" 
-                                                     value="{{ $option->value }}" 
-                                                     @if($option->selected) checked @endif>
-                                              <label class="form-check-label" 
-                                                     for="{{ $field->name }}-{{ $loop->index }}">
-                                                  {{ $option->label }}
-                                              </label>
-                                          </div>
-                                      @endforeach
+                                    @break
+                                @case('date')
+                                    <div class="form-row">
+                                        <div class="form-column">
+                                            <label for="{{ $field->name }}">{{ $field->label }}</label>
+                                            <input class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" min="{{ $field->min }}" max="{{ $field->max }}" step="{{ $field->step }}" @if($field->required) required @endif
+                                                @if(isset($field->subtype) && $field->subtype == 'date') type="date" @endif
+                                                @if(isset($field->subtype) && $field->subtype == 'time') type="time" @endif
+                                                @if(isset($field->subtype) && $field->subtype == 'datetime-local') type="datetime-local" @endif
+                                                
+                                            >
+                                        </div>
                                     </div>
-                                  </div>
-                              @break
-                            @case('checkbox-group')
-                                <label for="{{ $field->name }}" class="form-label">{{ strip_tags($field->label) }}</label>
-                              
-                                <div class="form-row">
-                                  <div class="form-column">
-                                    @foreach ($field->values as $option)
-                                      <div class="form-check">
-                                          <input class="{{ isset($field->className) ? $field->className : 'form-check-input'}}" 
-                                            type="checkbox" 
-                                            id="{{ $field->name }}-{{ $loop->index }}" 
-                                            name="{{ $field->name }}[]" 
-                                            value="{{ $option->value }}"
-                                            @if($field->required) required @endif
-                                            @if($option->selected) checked @endif>
-                                          <label class="form-check-label" for="{{ $field->name }}-{{ $loop->index }}">
-                                              {{ $option->label }}
-                                          </label>
-                                      </div>
+                                    @break
+                                @case('file')
+                                    <div class="form-row">
+                                        <div class="form-column">
+                                            <label for="{{ $field->name }}">{{ $field->label }}</label>
+                                            <input type="file" class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" 
+                                                @if($field->required) required @endif
+                                                @if($field->multiple) multiple @endif>
+                                        </div>
+                                    </div>
+                                    @break
+                                @case('textarea')
+                                    <div class="form-row">
+                                        <div class="form-column">
+                                            <label for="{{ $field->name }}" class="form-label">{{ strip_tags($field->label) }}</label>
+                                            <textarea class="{{ $field->className }}" id="{{ $field->name }}" value="{{ isset($field->value) ? $field->value : ''}}" name="{{ $field->name }}" rows="{{ isset($field->rows) ? $field->rows : 4 }}" placeholder="{{ $field->placeholder }}" @if($field->required) required @endif></textarea>
+                                        </div>
+                                    </div>
+                                    @break
+                                @case('number')
+                                    <div class="form-row">
+                                        <div class="form-column">
+                                            <label for="{{ $field->name }}">{{ $field->label }}</label>
+                                            <input type="number" class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" 
+                                                min="{{ $field->min }}" max="{{ $field->max }}" 
+                                                @if($field->required) required @endif>
+                                        </div>
+                                    </div>
+                                    @break
 
-                                    @endforeach
-                                  </div>
-                                </div>
-                              @break
-                            @case('button')
-                                <button class="{{ $field->className }}"
-                                  @if(isset($field->subtype) && $field->subtype == 'submit')   
-                                    type="{{$field->subtype}}" 
-                                  @elseif(isset($field->subtype) && $field->subtype == 'button')
-                                    type="{{$field->subtype}}"
-                                  @elseif(isset($field->subtype) && $field->subtype == 'reset')
-                                    type="{{$field->subtype}}" 
-                                  @else
-                                      type="submit"
-                                  @endif
-                                >{{ $field->label }}</button>
+                                @case('paragraph')
+                                    @if ($field->subtype == 'blockquote')
+                                        <blockquote class={{ isset($field->className) ? $field->className : '' }}>{{ $field->label }}</blockquote>
+                                    @elseif ($field->subtype == 'blockquote')
+                                        <address class={{ isset($field->className) ? $field->className : '' }}>{{ $field->label }}</address>
+                                    @elseif ($field->subtype == 'blockquote')
+                                        <canvas class={{ isset($field->className) ? $field->className : '' }}>{{ $field->label }}</canvas>
+                                    @elseif ($field->subtype == 'blockquote')
+                                        <output class={{ isset($field->className) ? $field->className : '' }}>{{ $field->label }}</output>
+                                    @else
+                                        <p class={{ isset($field->className) ? $field->className : '' }}>{{ $field->label }}</p>
+                                    @endif
+                                    @break
+                                @case('select')
+                                    <div class="form-row">
+                                        <div class="form-column">
+                                            <label for="{{ $field->name }}" class="form-label">{{ strip_tags($field->label) }}</label>
+                                            <select id="{{ $field->name }}" 
+                                                    name="{{ $field->name }}@if($field->multiple) [] @endif" 
+                                                    class="{{ $field->className }}" 
+                                                    @if($field->required) required @endif
+                                                    @if($field->multiple) multiple @endif>
+                                                @foreach ($field->values as $option)
+                                                    <option value="{{ $option->value }}" 
+                                                        @if($option->selected) selected @endif>
+                                                        {{ $option->label }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    @break
+                                @case('radio-group')
+                                    <label for="{{ $field->name }}" class="form-label">{{ strip_tags($field->label) }}</label>
+                                    <div class="form-row">
+                                        <div class="form-column">
+                                        @foreach ($field->values as $option)
+                                            <div class="form-check">
+                                                <input class="{{ $field->className }}" 
+                                                        type="radio" 
+                                                        name="{{ $field->name }}" 
+                                                        id="{{ $field->name }}-{{ $loop->index }}" 
+                                                        value="{{ $option->value }}" 
+                                                        @if($option->selected) checked @endif>
+                                                <label class="form-check-label" 
+                                                        for="{{ $field->name }}-{{ $loop->index }}">
+                                                    {{ $option->label }}
+                                                </label>
+                                            </div>
+                                        @endforeach
+                                        </div>
+                                    </div>
                                 @break
-                            @default
-                                {{-- Handle other field types if necessary --}}
-                        @endswitch
-                    @endforeach
-                    
-                </form>
-            </div>
+                                @case('checkbox-group')
+                                    <label for="{{ $field->name }}" class="form-label">{{ strip_tags($field->label) }}</label>
+                                
+                                    <div class="form-row">
+                                    <div class="form-column">
+                                        @foreach ($field->values as $option)
+                                        <div class="form-check">
+                                            <input class="{{ isset($field->className) ? $field->className : 'form-check-input'}}" 
+                                                type="checkbox" 
+                                                id="{{ $field->name }}-{{ $loop->index }}" 
+                                                name="{{ $field->name }}[]" 
+                                                value="{{ $option->value }}"
+                                                @if($field->required) required @endif
+                                                @if($option->selected) checked @endif>
+                                            <label class="form-check-label" for="{{ $field->name }}-{{ $loop->index }}">
+                                                {{ $option->label }}
+                                            </label>
+                                        </div>
+
+                                        @endforeach
+                                    </div>
+                                    </div>
+                                @break
+                                @case('button')
+                                    <button class="{{ $field->className }}"
+                                    @if(isset($field->subtype) && $field->subtype == 'submit')   
+                                        type="{{$field->subtype}}" 
+                                    @elseif(isset($field->subtype) && $field->subtype == 'button')
+                                        type="{{$field->subtype}}"
+                                    @elseif(isset($field->subtype) && $field->subtype == 'reset')
+                                        type="{{$field->subtype}}" 
+                                    @else
+                                        type="submit"
+                                    @endif
+                                    >{{ $field->label }}</button>
+                                    @break
+                                @default
+                                    {{-- Handle other field types if necessary --}}
+                            @endswitch
+                        @endforeach
+                        
+                    </form>
+                </div>
+            @endif
+            
         </div>
     </section>
     

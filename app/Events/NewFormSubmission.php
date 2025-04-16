@@ -19,9 +19,21 @@ class NewFormSubmission implements ShouldBroadcast
         $this->data = $data;
     }
 
-    public function broadcastOn()
+    // public function broadcastOn()
+    // {
+    //     return new Channel('feedback');
+    // }
+
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return array<int, \Illuminate\Broadcasting\Channel>
+     */
+    public function broadcastOn(): array
     {
-        return new Channel('feedback');
+        return [
+            new PrivateChannel('feedback'),
+        ];
     }
 
     public function broadcastAs()

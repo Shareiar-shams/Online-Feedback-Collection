@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -18,37 +19,41 @@ Route::group(['namespace'=> 'App\Http\Controllers\User', ],function(){
 });
 
 Route::group(['namespace'=> 'App\Http\Controllers\Admin'],function(){
-    //Admin Dashboard
-    Route::get('/admin/dashboard', 'HomeController@index')->name('dashboard');
+    Route::middleware('auth')->group(function(){
+        //Admin Dashboard
+        Route::get('/admin/dashboard', 'HomeController@index')->name('dashboard');
 
-    // Chart report route
+        // Chart report route
 
-    Route::get('/admin/get-today-feedback-count', 'HomeController@getTodayFeedbackCount')->name('getTodayFeedbackCount');
+        Route::get('/admin/get-today-feedback-count', 'HomeController@getTodayFeedbackCount')->name('getTodayFeedbackCount');
 
-    Route::get('/admin/get-this-month-feedback-count', 'HomeController@getThisMonthFeedbackCount')->name('getThisMonthFeedbackCount');
+        Route::get('/admin/get-this-month-feedback-count', 'HomeController@getThisMonthFeedbackCount')->name('getThisMonthFeedbackCount');
 
+        // Course Route
+        Route::resource('/admin/course', 'CourseController');
+        
+        //Form Showing route
+        Route::get('/admin/show/form', 'HomeController@show_forms')->name('show_forms');
 
-    //Form Showing route
-    Route::get('/admin/show/form', 'HomeController@show_forms')->name('show_forms');
+        //Form Create Route
+        Route::get('/admin/create/form', 'HomeController@create')->name('form.create');
+        Route::post('admin/create/form', 'HomeController@store')->name('create_from');
 
-    //Form Create Route
-    Route::get('/admin/create/form', 'HomeController@create')->name('form.create');
-    Route::post('admin/create/form', 'HomeController@store')->name('create_from');
+        // Form Route
+        Route::resource('admin/form','HomeController');
+        Route::put('/admin/form/status/{id}','HomeController@status')->name('form.status');
 
-    // Form Route
-    Route::resource('admin/form','HomeController');
-    Route::put('/admin/form/status/{id}','HomeController@status')->name('form.status');
+        //Submitted Form List
+        Route::get('/admin/submitted/feedback/list', 'HomeController@submitted_form_list')->name('submitted_form_list');
+        Route::delete('/admin/submitted/feedback/delete/{id}', 'HomeController@submitted_form_delete')->name('submitted_form_delete');
 
-    //Submitted Form List
-    Route::get('/admin/submitted/feedback/list', 'HomeController@submitted_form_list')->name('submitted_form_list');
-    Route::delete('/admin/submitted/feedback/delete/{id}', 'HomeController@submitted_form_delete')->name('submitted_form_delete');
+        // Admin Profile
+        Route::get('/admin/profile', 'HomeController@profile')->name('admin.profile');
+        Route::post('/admin/image/update/{id}', 'HomeController@imgupdate')->name('admin.image.update');
+        Route::put('/admin/password/update/{id}', 'HomeController@passupdate')->name('admin.password.update');
+        Route::put('/admin/profile/update/{id}', 'HomeController@update')->name('admin.profile.update');
 
-    // Admin Profile
-    Route::get('/admin/profile', 'HomeController@profile')->name('admin.profile');
-    Route::post('/admin/image/update/{id}', 'HomeController@imgupdate')->name('admin.image.update');
-    Route::put('/admin/password/update/{id}', 'HomeController@passupdate')->name('admin.password.update');
-    Route::put('/admin/profile/update/{id}', 'HomeController@update')->name('admin.profile.update');
-
+    });
     
 });
 

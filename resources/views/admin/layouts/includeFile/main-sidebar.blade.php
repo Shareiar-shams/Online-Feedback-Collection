@@ -76,7 +76,32 @@
 		              	</li>
 		            </ul>
 		        </li>
-
+				<li class="nav-item">
+		           
+		            <x-ad-nav-link class="nav-link">
+		            	<i  class='fas fa-book'></i>
+		              	<p class="pl-2">
+		                	Manage Course
+		                	<i class="fas fa-angle-left right"></i>
+		              	</p>
+		            </x-ad-nav-link>
+		            <ul class="nav nav-treeview">
+		              	<li class="nav-item">
+		              		<a href="{{ route('course.index') }}" class="nav-link {{ Route::currentRouteNamed( 'course.index' ) ?  'active' : '' }}">
+		                	
+		                  		<i class="far fa-circle nav-icon"></i>
+		                  		<p>All Course</p>
+		                	</a>
+		              	</li>
+		              	<li class="nav-item">
+		              		<a href="{{ route('course.create') }}" class="nav-link {{ Route::currentRouteNamed( 'course.create' ) ?  'active' : '' }}">
+		                	
+		                  		<i class="far fa-circle nav-icon"></i>
+		                  		<p>Create Form</p>
+		                	</a>
+		              	</li>
+		            </ul>
+		        </li>
 		        <li class="nav-item">
 		        	<x-ad-nav-link href="{{route('submitted_form_list')}}" class="nav-link {{ Route::currentRouteNamed( 'submitted_form_list' ) ?  'active' : '' }}">
 		              <i class="nav-icon fas fa-comments"></i>
