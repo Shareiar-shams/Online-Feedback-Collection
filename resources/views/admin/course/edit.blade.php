@@ -103,28 +103,26 @@
                             <input type="button" id="add_more" class="btn btn-primary" value="Add More Module"/>
                             <div id="module-container">
                                 @forelse ($course->modules as $module)
-                                    @php
-                                        $moduleId = $loop->index + 1;
-                                    @endphp
                                     
                                     <div class="module-wrapper">
 
-                                        <div class="card card-default module" data-module-id="{{ $moduleId }}">
+                                        <div class="card card-default module" data-module-id="{{ $loop->index + 1 }}">
                                             <div class="card-body">
                                                 <div class="form-group">
-                                                    <label for="module_title_{{ $moduleId }}">Module Title *</label>
-                                                    <input type="text" id="module_title_{{ $moduleId }}" name="modules[{{ $moduleId }}][title]" value="{{ $module->title }}" class="form-control" required>
+                                                    <label for="module_title_{{ $loop->index + 1 }}">Module Title *</label>
+                                                    <input type="text" id="module_title_{{ $loop->index + 1 }}" name="modules[{{ $loop->index + 1 }}][title]" value="{{ $module->title }}" class="form-control" required>
                                                 </div>
-                                                <button type="button" class="btn btn-success add-content" data-module-id="{{ $moduleId }}">Add Content</button>
-                                                <button type="button" class="btn btn-danger remove-module" data-module-id="{{ $moduleId }}">Remove Module</button>
-                                                <div class="content-container-{{ $moduleId }} mt-3">
+                                                <button type="button" class="btn btn-success add-content" data-module-id="{{ $loop->index + 1 }}">Add Content</button>
+                                                <button type="button" class="btn btn-danger remove-module" data-modules-id="{{ $module->id }}">Remove Module</button>
+                                                <div class="content-container-{{ $loop->index + 1 }} mt-3">
                                                     
                                                     @forelse ($module->contents as $content)
                                                         <div class="content-block">
                                                             <hr>
+                                                            <input type="hidden" name="modules[{{ $loop->parent->index + 1 }}][content][{{ $loop->index + 1 }}][id]" value="{{ $content->id }}">
                                                             <div class="form-group">
                                                                 <label>Title *</label>
-                                                                <input type="text" name="modules[{{ $moduleId }}}][content][{{ $loop->index + 1 }}][title]" value="{{ $content->title }}" class="form-control" required>
+                                                                <input type="text" name="modules[{{ $loop->parent->index + 1 }}}][content][{{ $loop->index + 1 }}][title]" value="{{ $content->title }}" class="form-control" required>
                                                             </div>
                                                             @forelse (json_decode($content->data, true) as $name => $value)
                                                                 <div class="form-group">
@@ -133,7 +131,7 @@
                                                                 </div>
                                                             @empty
                                                             @endforelse
-                                                            <button type="button" class="btn btn-sm btn-danger remove-content">Remove Content</button>
+                                                            <button type="button" class="btn btn-sm btn-danger remove-content" data-content-id="{{ $content->id }}">Remove Content</button>
                                                         </div>
                                                           
                                                     @empty
@@ -259,11 +257,60 @@
             }
 
             if (event.target.classList.contains('remove-content')) {
+                const contentId = event.target.dataset.contentId;
+                console.log(contentId);
+                if (contentId) {
+                    $.ajax({
+                        url: '{{ url("module/content/delete/") }}/' + contentId,
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response){
+                            if(response.success){
+                                toastr.success(response.message);
+                            }else{
+                                alert(response.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            if (xhr.status === 404) {
+                                toastr.error('Requested URL not found!');
+                            } else {
+                                toastr.error('Something went wrong: ' + error);
+                            }
+                            console.error(xhr.responseText); 
+                        }
+                    });
+                }
                 const contentBlock = event.target.closest('.content-block');
                 contentBlock.remove();
             }
 
             if (event.target.classList.contains('remove-module')) {
+                const moduleId = event.target.dataset.modulesId;
+                if (moduleId) {
+                    $.ajax({
+                        url: '{{ url("module/delete/") }}/'+moduleId, 
+                        type: 'delete',
+                        data: moduleId,
+                        success: function(response){
+                            if(response.success){
+                                toastr.success(response.message);
+                            }else{
+                                alert(response.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            if (xhr.status === 404) {
+                                toastr.error('Requested URL not found!');
+                            } else {
+                                toastr.error('Something went wrong: ' + error);
+                            }
+                            console.error(xhr.responseText); 
+                        }
+                    });
+                }
                 const moduleWrapper = event.target.closest('.module-wrapper');
                 moduleWrapper.remove();
             }
@@ -282,9 +329,9 @@
                     contentType: false, 
                     success: function(response){
                         if(response.success){
-                            toastr.success('Course Successfully add');
-                            console.log(response.formData);
-                            // window.location.href = "{{ route('course.index') }}";
+                            toastr.success('Course Updated Successfully!');
+                            // console.log(response.formData);
+                            window.location.href = "{{ route('course.index') }}";
                         }else{
                             alert(response.message);
                         }

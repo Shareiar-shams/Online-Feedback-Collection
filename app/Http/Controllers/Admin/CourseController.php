@@ -139,13 +139,23 @@ class CourseController extends Controller
             $course->save();
             
             foreach($request->modules as $moduleData){
-                $module = new Module();
+                if(isset($moduleData['id'])){
+                    $module = Module::find($moduleData['id']);
+                }else{
+                    $module = new Module();
+                }
+                
                 $module->title = $moduleData['title'];
                 $module->course_id = $course->id; 
                 $module->save();
                 if(isset($moduleData['content']) && is_array($moduleData['content'])){
                     foreach($moduleData['content'] as $contentData){
-                        $content = new Content();
+                        if (isset($contentData['id'])) {
+                            $content = Content::find($contentData['id']);
+                        }else{
+                            $content = new Content();
+                        }
+                            
                         $content->title = $contentData['title'];
                         $data = $contentData;
                         unset($data['title']);
@@ -185,5 +195,37 @@ class CourseController extends Controller
             'alert-type' => 'error',
         );
         return redirect()->back()->with($notification);
+    }
+    
+    public function moduleDelete(string $id){
+        $module = Module::find($id);
+        if (!$module) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Module not found'
+            ]);
+        }
+        $module->contents()->delete();
+        $module->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Module and its contents deleted successfully'
+        ]);
+    }
+
+    public function contentDelete(string $id){
+        $content = Content::find($id);
+        if (!$content) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Content not found'
+            ]);
+        }
+        $content->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Contents deleted successfully'
+        ]);
     }
 }

@@ -237,8 +237,8 @@
                     success: function(response){
                         if(response.success){
                             toastr.success('Course Successfully add');
-                            console.log(response.formData);
-                            // window.location.href = "{{ route('course.index') }}";
+                            // console.log(response.formData);
+                            window.location.href = "{{ route('course.index') }}";
                         }else{
                             alert(response.message);
                         }

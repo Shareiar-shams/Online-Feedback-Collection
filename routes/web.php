@@ -31,7 +31,8 @@ Route::group(['namespace'=> 'App\Http\Controllers\Admin'],function(){
 
         // Course Route
         Route::resource('/admin/course', 'CourseController');
-        
+        Route::delete('module/delete/{id}','CourseController@moduleDelete')->name('moduleDelete');
+        Route::delete('module/content/delete/{id}','CourseController@contentDelete')->name('contentDelete');
         //Form Showing route
         Route::get('/admin/show/form', 'HomeController@show_forms')->name('show_forms');
 
