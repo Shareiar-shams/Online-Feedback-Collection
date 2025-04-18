@@ -70,7 +70,8 @@
 					                    </button>
 					                    <div class="dropdown-menu" role="menu">
 					                    	
-											<a class="dropdown-item" href="{{ route('course.edit') }}">Edit</a>
+											<a class="dropdown-item" href="{{ route('course.edit', $course->id) }}"><i class="fas fa-angle-double-right"></i>
+					                    		{{ __('Edit') }}</a>
 					                      	<a class="dropdown-item" href="#" onclick="
 
 		                            			if(confirm('Are you Want to Uproot this!'))
@@ -93,7 +94,7 @@
 					                        "><i class="fas fa-angle-double-right"></i>
 					                    		{{ __('Delete') }}
 					                    	</a>
-					                    	<form action="{{route('submitted_form_delete',$course->id)}}" method="post" id="delete-form-{{$course->id}}" style="display: none;">
+					                    	<form action="{{route('course.destroy',$course->id)}}" method="post" id="delete-form-{{$course->id}}" style="display: none;">
 					                      		@csrf
 										        @method('delete')
 				                            </form>

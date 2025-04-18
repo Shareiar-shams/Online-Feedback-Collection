@@ -106,7 +106,8 @@ class CourseController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $course = Course::find($id);
+        return view('admin.course.edit',compact('course'));
     }
 
     /**
@@ -122,7 +123,9 @@ class CourseController extends Controller
      */
     public function destroy(string $id)
     {
-        Course::find($id)->delete();
+        $course = Course::find($id);
+
+        $course->delete();
         $notification = array(
             'message' => 'Course Delete.', 
             'alert-type' => 'error',
