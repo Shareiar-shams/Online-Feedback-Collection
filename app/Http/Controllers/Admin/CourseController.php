@@ -115,7 +115,61 @@ class CourseController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $validated = $request->validate([
+                'title' => 'required|max:255',
+                'level' => 'required',
+                'price' => 'required|numeric',
+                'featured_image.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            ]);
+            
+            $imageName = null;
+
+            if($request->hasFile('featured_image'))
+            {
+                $imageName = $request->featured_image->getClientOriginalName();
+                $imageName = $request->featured_image->store('public');
+            }
+    
+            $course = Course::find($id);
+            $course->title = $request->title; 
+            $course->level = $request->level; 
+            $course->price = $request->price; 
+            $course->featured_image = $imageName;
+            $course->save();
+            
+            foreach($request->modules as $moduleData){
+                $module = new Module();
+                $module->title = $moduleData['title'];
+                $module->course_id = $course->id; 
+                $module->save();
+                if(isset($moduleData['content']) && is_array($moduleData['content'])){
+                    foreach($moduleData['content'] as $contentData){
+                        $content = new Content();
+                        $content->title = $contentData['title'];
+                        $data = $contentData;
+                        unset($data['title']);
+                        
+                        $content->data = json_encode($data);
+                        $content->module_id = $module->id; 
+                        $content->save();
+                    }
+    
+                }
+            }
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Course Update successfully!',
+                'formData' => $request->all()
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error saving Course: ' . $e->getMessage(),
+            ]);
+        }
     }
 
     /**
