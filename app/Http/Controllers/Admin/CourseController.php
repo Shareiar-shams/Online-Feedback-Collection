@@ -120,15 +120,17 @@ class CourseController extends Controller
                 'title' => 'required|max:255',
                 'level' => 'required',
                 'price' => 'required|numeric',
-                'featured_image.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+                'featured_image.*' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
             ]);
-            
             $imageName = null;
 
             if($request->hasFile('featured_image'))
             {
                 $imageName = $request->featured_image->getClientOriginalName();
                 $imageName = $request->featured_image->store('public');
+            }else{
+                $data = Course::where('id',$id)->first();
+                $imageName = $data->featured_image;
             }
     
             $course = Course::find($id);
@@ -159,6 +161,7 @@ class CourseController extends Controller
                         $content->title = $contentData['title'];
                         $data = $contentData;
                         unset($data['title']);
+                        unset($data['id']);
                         
                         $content->data = json_encode($data);
                         $content->module_id = $module->id; 

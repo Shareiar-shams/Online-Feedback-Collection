@@ -50,6 +50,7 @@
                     </div>
                     <form action="{{ route('course.update', $course->id) }}" id="courseForm" method="post" enctype="multipart/form-data">
                         @csrf
+                        @method('PUT')
                         <!-- /.card-header -->
                         <div class="card-body">
                             
@@ -90,7 +91,7 @@
 			                    <label for="featured_image">Featured Image *</label>
 			                    <div class="input-group">
 				                    <div class="custom-file">
-				                        <input type="file" accept="image/*" onchange="loadFile(event)" name="featured_image" class="custom-file-input" id="FeaturedImageInputFile" required>
+				                        <input type="file" accept="image/*" onchange="loadFile(event)" name="featured_image" class="custom-file-input" id="FeaturedImageInputFile">
 				                        <label class="custom-file-label" for="exampleInputFile">Upload Image</label>
 				                    </div>
 			                    </div>
@@ -102,32 +103,45 @@
                         <div class="card-body">
                             <input type="button" id="add_more" class="btn btn-primary" value="Add More Module"/>
                             <div id="module-container">
+
+                                @php
+                                    $totalContentCount = 0;
+                                    foreach ($course->modules as $module) {
+                                        $totalContentCount += $module->contents->count();
+                                    }
+                                @endphp
                                 @forelse ($course->modules as $module)
-                                    
+                                    @php
+                                        $moduleId = $loop->index + 1;
+                                    @endphp
                                     <div class="module-wrapper">
 
-                                        <div class="card card-default module" data-module-id="{{ $loop->index + 1 }}">
+                                        <div class="card card-default module" data-module-id="{{ $moduleId }}">
                                             <div class="card-body">
                                                 <div class="form-group">
-                                                    <label for="module_title_{{ $loop->index + 1 }}">Module Title *</label>
-                                                    <input type="text" id="module_title_{{ $loop->index + 1 }}" name="modules[{{ $loop->index + 1 }}][title]" value="{{ $module->title }}" class="form-control" required>
+                                                    <label for="module_title_{{ $moduleId }}">Module Title *</label>
+                                                    <input type="text" id="module_title_{{ $moduleId }}" name="modules[{{ $moduleId }}][title]" value="{{ $module->title }}" class="form-control" required>
                                                 </div>
-                                                <button type="button" class="btn btn-success add-content" data-module-id="{{ $loop->index + 1 }}">Add Content</button>
+                                                <input type="hidden" id="module_id_{{ $moduleId }}" name="modules[{{ $moduleId }}][id]" value="{{ $module->id }}" class="form-control">
+                                                <button type="button" class="btn btn-success add-content" data-module-id="{{ $moduleId }}">Add Content</button>
                                                 <button type="button" class="btn btn-danger remove-module" data-modules-id="{{ $module->id }}">Remove Module</button>
-                                                <div class="content-container-{{ $loop->index + 1 }} mt-3">
+                                                <div class="content-container-{{ $moduleId }} mt-3">
                                                     
                                                     @forelse ($module->contents as $content)
+                                                        @php
+                                                            $contentId = $loop->index;
+                                                        @endphp
                                                         <div class="content-block">
                                                             <hr>
-                                                            <input type="hidden" name="modules[{{ $loop->parent->index + 1 }}][content][{{ $loop->index + 1 }}][id]" value="{{ $content->id }}">
+                                                            <input type="hidden" name="modules[{{ $moduleId }}][content][{{ $contentId }}][id]" value="{{ $content->id }}">
                                                             <div class="form-group">
                                                                 <label>Title *</label>
-                                                                <input type="text" name="modules[{{ $loop->parent->index + 1 }}}][content][{{ $loop->index + 1 }}][title]" value="{{ $content->title }}" class="form-control" required>
+                                                                <input type="text" name="modules[{{ $moduleId }}][content][{{ $contentId }}][title]" value="{{ $content->title }}" class="form-control" required>
                                                             </div>
                                                             @forelse (json_decode($content->data, true) as $name => $value)
                                                                 <div class="form-group">
                                                                     <label>{{ ucfirst($name) }}*</label>
-                                                                    <input type="text" name="modules[{{ $module->id }}][content][{{ $loop->index }}][{{ $name }}]" value="{{ $value }}" class="form-control" required>
+                                                                    <input type="text" name="modules[{{ $moduleId }}][content][{{ $contentId }}][{{ $name }}]" value="{{ $value }}" class="form-control" required>
                                                                 </div>
                                                             @empty
                                                             @endforelse
@@ -181,8 +195,8 @@
             image.src = URL.createObjectURL(event.target.files[0]);
         }
 
-        let moduleCount = 0;
-        let contentTitleCount = 0;
+        let moduleCount = {{ optional($course->modules)->count() ?? 0 }};
+        let contentTitleCount = {{ $totalContentCount ?? 0 }};
 
         document.getElementById('add_more').addEventListener('click', function() {
             moduleCount++;
@@ -258,7 +272,7 @@
 
             if (event.target.classList.contains('remove-content')) {
                 const contentId = event.target.dataset.contentId;
-                console.log(contentId);
+                
                 if (contentId) {
                     $.ajax({
                         url: '{{ url("module/content/delete/") }}/' + contentId,
@@ -289,11 +303,14 @@
 
             if (event.target.classList.contains('remove-module')) {
                 const moduleId = event.target.dataset.modulesId;
+                
                 if (moduleId) {
                     $.ajax({
                         url: '{{ url("module/delete/") }}/'+moduleId, 
                         type: 'delete',
-                        data: moduleId,
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
                         success: function(response){
                             if(response.success){
                                 toastr.success(response.message);
@@ -321,9 +338,15 @@
             form.submit(function (e){
                 e.preventDefault();
                 let formData = new FormData(form[0]);
+                formData.append('_method', 'PUT');
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
                 $.ajax({
                     url: form.attr('action'),
-                    type: form.attr('method'),
+                    type: "POST",
                     data: formData,
                     processData: false,
                     contentType: false, 
