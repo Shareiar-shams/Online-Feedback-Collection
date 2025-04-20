@@ -203,8 +203,8 @@
         <div class="container px-4 px-lg-5">
             @if (!empty($form))
                 <div class="form-wrapper">
-                    <h1 class="title">{{ isset($form->formName) ? $form->formName : '' }}</h1>
-                    <p class="subtitle">{{ isset($form->formSubtitle) ? $form->formSubtitle : ''}}</p>
+                    <h1 class="title">{{ $form->formName ?? '' }}</h1>
+                    <p class="subtitle">{{ $form->formSubtitle ?? '' }}</p>
                     @php
                         $fields = json_decode($form->data); // Decode the JSON string
 
@@ -221,8 +221,8 @@
                                 @case('text')
                                     <div class="form-row">
                                         <div class="form-column">
-                                            <label for="{{ $field->name }}" class="form-label">{{ $field->label }}</label>
-                                            <input class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" placeholder="{{ $field->placeholder }}" value="{{ isset($field->value) ? $field->value : ''}}"
+                                            <label for="{{ $field->name ?? '' }}" class="form-label">{{ $field->label }}</label>
+                                            <input class="{{ $field->className ?? '' }}" id="{{ $field->name ?? '' }}" name="{{ $field->name ?? '' }}" placeholder="{{ $field->placeholder ?? '' }}" value="{{ isset($field->value) ? $field->value : ''}}"
                                             @if($field->required) required @endif 
                                             @if(isset($field->subtype) && $field->subtype == 'email')   type="{{$field->subtype}}" 
                                             @elseif(isset($field->subtype) && $field->subtype == 'tel')   type="number" 
@@ -231,7 +231,7 @@
                                             @elseif(isset($field->subtype) && $field->subtype == 'password') 
                                                 type="{{$field->subtype}}" 
                                             @else
-                                                type="{{$field->type}}"
+                                                type="{{$field->type ?? ''}}"
                                             @endif
                                             @if(isset($field->maxlength)) maxlength="{{ $field->maxlength }}" @endif
                                             >
@@ -241,8 +241,8 @@
                                 @case('autocomplete')
                                     <div class="form-row">
                                         <div class="form-column">
-                                            <label for="{{ $field->name }}">{{ $field->label }}</label>
-                                            <input type="text" class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" placeholder="{{ $field->placeholder }}" 
+                                            <label for="{{ $field->name ?? '' }}">{{ $field->label }}</label>
+                                            <input type="text" class="{{ $field->className ?? '' }}" id="{{ $field->name ?? '' }}" name="{{ $field->name ?? '' }}" placeholder="{{ $field->placeholder ?? '' }}" 
                                                 @if($field->required) required @endif> 
                                         </div>
                                     </div>
@@ -250,8 +250,8 @@
                                 @case('file')
                                     <div class="form-row">
                                         <div class="form-column">
-                                            <label for="{{ $field->name }}">{{ $field->label }}</label>
-                                            <input type="file" class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" 
+                                            <label for="{{ $field->name ?? '' }}">{{ $field->label }}</label>
+                                            <input type="file" class="{{ $field->className ?? '' }}" id="{{ $field->name ?? '' }}" name="{{ $field->name ?? '' }}" 
                                                 @if($field->required) required @endif
                                                 @if($field->multiple) multiple @endif>
                                         </div>
@@ -260,8 +260,8 @@
                                 @case('date')
                                     <div class="form-row">
                                         <div class="form-column">
-                                            <label for="{{ $field->name }}">{{ $field->label }}</label>
-                                            <input class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" min="{{ $field->min }}" max="{{ $field->max }}" step="{{ $field->step }}" @if($field->required) required @endif
+                                            <label for="{{ $field->name ?? '' }}">{{ $field->label }}</label>
+                                            <input class="{{ $field->className ?? '' }}" id="{{ $field->name ?? '' }}" name="{{ $field->name ?? '' }}" min="{{ $field->min ?? '0' }}" max="{{ $field->max ?? '100' }}" step="{{ $field->step ?? '' }}" @if($field->required) required @endif
                                                 @if(isset($field->subtype) && $field->subtype == 'date') type="date" @endif
                                                 @if(isset($field->subtype) && $field->subtype == 'time') type="time" @endif
                                                 @if(isset($field->subtype) && $field->subtype == 'datetime-local') type="datetime-local" @endif
@@ -273,8 +273,8 @@
                                 @case('file')
                                     <div class="form-row">
                                         <div class="form-column">
-                                            <label for="{{ $field->name }}">{{ $field->label }}</label>
-                                            <input type="file" class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" 
+                                            <label for="{{ $field->name ?? '' }}">{{ $field->label }}</label>
+                                            <input type="file" class="{{ $field->className ?? '' }}" id="{{ $field->name ?? '' }}" name="{{ $field->name ?? '' }}" 
                                                 @if($field->required) required @endif
                                                 @if($field->multiple) multiple @endif>
                                         </div>
@@ -284,16 +284,16 @@
                                     <div class="form-row">
                                         <div class="form-column">
                                             <label for="{{ $field->name }}" class="form-label">{{ strip_tags($field->label) }}</label>
-                                            <textarea class="{{ $field->className }}" id="{{ $field->name }}" value="{{ isset($field->value) ? $field->value : ''}}" name="{{ $field->name }}" rows="{{ isset($field->rows) ? $field->rows : 4 }}" placeholder="{{ $field->placeholder }}" @if($field->required) required @endif></textarea>
+                                            <textarea class="{{ $field->className ?? '' }}" id="{{ $field->name ?? '' }}" value="{{ isset($field->value) ? $field->value : ''}}" name="{{ $field->name ?? '' }}" rows="{{ isset($field->rows) ? $field->rows : 4 }}" placeholder="{{ $field->placeholder ?? '' }}" @if($field->required) required @endif></textarea>
                                         </div>
                                     </div>
                                     @break
                                 @case('number')
                                     <div class="form-row">
                                         <div class="form-column">
-                                            <label for="{{ $field->name }}">{{ $field->label }}</label>
-                                            <input type="number" class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" 
-                                                min="{{ $field->min }}" max="{{ $field->max }}" 
+                                            <label for="{{ $field->name ?? '' }}">{{ $field->label }}</label>
+                                            <input type="number" class="{{ $field->className ?? '' }}" id="{{ $field->name ?? '' }}" name="{{ $field->name ?? '' }}" 
+                                                min="{{ $field->min ?? '0' }}" max="{{ $field->max ?? '100' }}" 
                                                 @if($field->required) required @endif>
                                         </div>
                                     </div>
@@ -315,36 +315,37 @@
                                 @case('select')
                                     <div class="form-row">
                                         <div class="form-column">
-                                            <label for="{{ $field->name }}" class="form-label">{{ strip_tags($field->label) }}</label>
-                                            <select id="{{ $field->name }}" 
-                                                    name="{{ $field->name }}@if($field->multiple) [] @endif" 
-                                                    class="{{ $field->className }}" 
+                                            <label for="{{ $field->name ?? '' }}" class="form-label">{{ strip_tags($field->label) }}</label>
+                                            <select id="{{ $field->name ?? '' }}" 
+                                                    name="{{ $field->name ?? '' }}@if($field->multiple) [] @endif" 
+                                                    class="{{ $field->className ?? '' }}" 
                                                     @if($field->required) required @endif
                                                     @if($field->multiple) multiple @endif>
-                                                @foreach ($field->values as $option)
-                                                    <option value="{{ $option->value }}" 
+                                                @forelse ($field->values as $option)
+                                                    <option value="{{ $option->value ?? '' }}" 
                                                         @if($option->selected) selected @endif>
                                                         {{ $option->label }}
                                                     </option>
-                                                @endforeach
+                                                @empty
+                                                @endforelse
                                             </select>
                                         </div>
                                     </div>
                                     @break
                                 @case('radio-group')
-                                    <label for="{{ $field->name }}" class="form-label">{{ strip_tags($field->label) }}</label>
+                                    <label for="{{ $field->name ?? '' }}" class="form-label">{{ strip_tags($field->label) }}</label>
                                     <div class="form-row">
                                         <div class="form-column">
                                         @foreach ($field->values as $option)
                                             <div class="form-check">
                                                 <input class="{{ $field->className }}" 
-                                                        type="radio" 
-                                                        name="{{ $field->name }}" 
-                                                        id="{{ $field->name }}-{{ $loop->index }}" 
-                                                        value="{{ $option->value }}" 
-                                                        @if($option->selected) checked @endif>
+                                                    type="radio" 
+                                                    name="{{ $field->name ?? '' }}" 
+                                                    id="{{ $field->name ?? '' }}-{{ $loop->index }}" 
+                                                    value="{{ $option->value ?? '' }}" 
+                                                    @if($option->selected) checked @endif>
                                                 <label class="form-check-label" 
-                                                        for="{{ $field->name }}-{{ $loop->index }}">
+                                                        for="{{ $field->name ?? '' }}-{{ $loop->index }}">
                                                     {{ $option->label }}
                                                 </label>
                                             </div>
