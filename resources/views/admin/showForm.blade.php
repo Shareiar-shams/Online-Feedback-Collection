@@ -42,8 +42,8 @@
 	                                @break
 				                @case('text')
 				                    <div class="form-group">
-				                        <label for="{{ $field->name }}">{{ $field->label }}</label>
-				                        <input type="{{ $field->type }}" class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" placeholder="{{ $field->placeholder }}" value="{{ isset($field->value) ? $field->value : ''}}" 
+				                        <label for="{{ $field->name ?? '' }}">{{ $field->label }}</label>
+				                        <input type="{{ $field->type ?? 'text' }}" class="{{ $field->className ?? '' }}" id="{{ $field->name ?? '' }}" name="{{ $field->name ?? '' }}" placeholder="{{ $field->placeholder ?? '' }}" value="{{ isset($field->value) ? $field->value : ''}}" 
 				                        @if($field->required) required @endif 
 				                        @if(isset($field->subtype) && $field->subtype == 'email') type="email" @endif
 			                           	@if(isset($field->subtype) && $field->subtype == 'tel') type="tel" @endif
@@ -55,15 +55,15 @@
 				                    @break
 				                @case('autocomplete')
 				                    <div class="form-group">
-				                        <label for="{{ $field->name }}">{{ $field->label }}</label>
-				                        <input type="text" class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" placeholder="{{ $field->placeholder }}" 
+				                        <label for="{{ $field->name ?? '' }}">{{ $field->label }}</label>
+				                        <input type="text" class="{{ $field->className ?? '' }}" id="{{ $field->name  ?? ''}}" name="{{ $field->name ?? ''}}" placeholder="{{ $field->placeholder ?? '' }}" 
 				                               @if($field->required) required @endif> 
 				                    </div>
 				                    @break
 				                @case('date')
 				                    <div class="form-group">
-				                        <label for="{{ $field->name }}">{{ $field->label }}</label>
-				                        <input class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" min="{{ $field->min }}" max="{{ $field->max }}" step="{{ $field->step }}" @if($field->required) required @endif
+				                        <label for="{{ $field->name ?? '' }}">{{ $field->label }}</label>
+				                        <input class="{{ $field->className ?? '' }}" id="{{ $field->name ?? '' }}" name="{{ $field->name ?? '' }}" min="{{ $field->min ?? '0' }}" max="{{ $field->max ?? '100' }}" step="{{ $field->step ?? '' }}" @if($field->required) required @endif
 				                        		@if(isset($field->subtype) && $field->subtype == 'date') type="date" @endif
 					                           	@if(isset($field->subtype) && $field->subtype == 'time') type="time" @endif
 					                           	@if(isset($field->subtype) && $field->subtype == 'datetime-local') type="datetime-local" @endif
@@ -74,24 +74,24 @@
 
 				                @case('file')
 				                    <div class="form-group">
-				                        <label for="{{ $field->name }}">{{ $field->label }}</label>
-				                        <input type="file" class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" 
+				                        <label for="{{ $field->name ?? '' }}">{{ $field->label }}</label>
+				                        <input type="file" class="{{ $field->className ?? '' }}" id="{{ $field->name ?? '' }}" name="{{ $field->name ?? '' }}" 
 				                               @if($field->required) required @endif
 				                               @if($field->multiple) multiple @endif>
 				                    </div>
 				                    @break
 				                @case('textarea')
 				                    <div class="form-group">
-				                        <label for="{{ $field->name }}">{{ strip_tags($field->label) }}</label>
-				                        <textarea class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" rows="{{ isset($field->rows) ? $field->rows : 3 }}" value="{{ isset($field->value) ? $field->value : ''}}" placeholder="{{ $field->placeholder }}" @if($field->required) required @endif></textarea>
+				                        <label for="{{ $field->name ?? '' }}">{{ strip_tags($field->label) }}</label>
+				                        <textarea class="{{ $field->className ?? '' }}" id="{{ $field->name ?? '' }}" name="{{ $field->name ?? '' }}" rows="{{ isset($field->rows) ? $field->rows : 3 }}" value="{{ isset($field->value) ? $field->value : ''}}" placeholder="{{ $field->placeholder ?? '' }}" @if($field->required) required @endif></textarea>
 				                    </div>
 				                    @break
 
 				                @case('number')
 		                            <div class="form-group">
-		                                <label for="{{ $field->name }}">{{ $field->label }}</label>
-		                                <input type="number" class="{{ $field->className }}" id="{{ $field->name }}" name="{{ $field->name }}" 
-		                                       min="{{ $field->min }}" max="{{ $field->max }}" 
+		                                <label for="{{ $field->name ?? '' }}">{{ $field->label }}</label>
+		                                <input type="number" class="{{ $field->className ?? '' }}" id="{{ $field->name ?? '' }}" name="{{ $field->name }}" 
+		                                       min="{{ $field->min ?? '0' }}" max="{{ $field->max ?? '100' }}" 
 		                                       @if($field->required) required @endif>
 		                            </div>
 		                            @break
@@ -110,10 +110,10 @@
 	                                @endif
 	                                @break
 				                @case('select')
-					                <label for="{{ $field->name }}">{{ strip_tags($field->label) }}</label>
-				                    <select id="{{ $field->name }}" 
-				                            name="{{ $field->name }}" 
-				                            class="{{ $field->className }}" 
+					                <label for="{{ $field->name ?? '' }}">{{ strip_tags($field->label) }}</label>
+				                    <select id="{{ $field->name ?? '' }}" 
+				                            name="{{ $field->name ?? '' }}" 
+				                            class="{{ $field->className ?? '' }}" 
 				                            @if($field->required) required @endif
 				                            @if($field->multiple) multiple @endif>
 				                        @foreach ($field->values as $option)
@@ -125,18 +125,18 @@
 				                    </select>
 				                    @break
 				                @case('radio-group')
-				                	<label for="{{ $field->name }}">{{ strip_tags($field->label) }}</label>
+				                	<label for="{{ $field->name ?? '' }}">{{ strip_tags($field->label) }}</label>
 				                    <div class="form-group">
 				                        @foreach ($field->values as $option)
 				                            <div class="form-check">
-				                                <input class="{{ $field->className }}" 
+				                                <input class="{{ $field->className ?? ''}}" 
 				                                       type="radio" 
-				                                       name="{{ $field->name }}" 
-				                                       id="{{ $field->name }}-{{ $loop->index }}" 
-				                                       value="{{ $option->value }}" 
+				                                       name="{{ $field->name ?? '' }}" 
+				                                       id="{{ $field->name ?? '' }}-{{ $loop->index }}" 
+				                                       value="{{ $option->value ?? '' }}" 
 				                                       @if($option->selected) checked @endif>
 				                                <label class="form-check-label" 
-				                                       for="{{ $field->name }}-{{ $loop->index }}">
+				                                       for="{{ $field->name ?? '' }}-{{ $loop->index }}">
 				                                    {{ $option->label }}
 				                                </label>
 				                            </div>
@@ -144,16 +144,16 @@
 				                    </div>
 					                @break
 				                @case('checkbox-group')
-				                	<label for="{{ $field->name }}">{{ strip_tags($field->label) }}</label>
+				                	<label for="{{ $field->name ?? '' }}">{{ strip_tags($field->label) }}</label>
 				                	
 				                    <div class="form-group">
 				                        @foreach ($field->values as $option)
 				                        	<div class="form-check">
 					                          	<input class="{{ isset($field->className) ? $field->className : 'form-check-input'}}" 
 					                          		type="checkbox" 
-					                          		id="{{ $field->name }}-{{ $loop->index }}" 
-					                          		name="{{ $field->name }}[]" 
-					                          		value="{{ $option->value }}"
+					                          		id="{{ $field->name ?? '' }}-{{ $loop->index }}" 
+					                          		name="{{ $field->name ?? '' }}[]" 
+					                          		value="{{ $option->value ?? '' }}"
 					                          		@if($field->required) required @endif
 									                @if($option->selected) checked @endif
 									            >
@@ -167,7 +167,7 @@
 					                @break
 				                @case('button')
 				                	<div class="card-footer">
-					                    <button type="type" value="{{ isset($field->value) ? $field->value : ''}}" class="{{ $field->className }}">{{ $field->label }}</button>
+					                    <button type="type" value="{{ isset($field->value) ? $field->value : ''}}" class="{{ $field->className ?? '' }}">{{ $field->label }}</button>
 					                </div>
 				                    @break
 				                @default

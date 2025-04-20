@@ -353,7 +353,7 @@
                                     </div>
                                 @break
                                 @case('checkbox-group')
-                                    <label for="{{ $field->name }}" class="form-label">{{ strip_tags($field->label) }}</label>
+                                    <label for="{{ $field->name ?? '' }}" class="form-label">{{ strip_tags($field->label) }}</label>
                                 
                                     <div class="form-row">
                                     <div class="form-column">
@@ -361,12 +361,12 @@
                                         <div class="form-check">
                                             <input class="{{ isset($field->className) ? $field->className : 'form-check-input'}}" 
                                                 type="checkbox" 
-                                                id="{{ $field->name }}-{{ $loop->index }}" 
-                                                name="{{ $field->name }}[]" 
-                                                value="{{ $option->value }}"
+                                                id="{{ $field->name ?? '' }}-{{ $loop->index }}" 
+                                                name="{{ $field->name ?? '' }}[]" 
+                                                value="{{ $option->value ?? '' }}"
                                                 @if($field->required) required @endif
                                                 @if($option->selected) checked @endif>
-                                            <label class="form-check-label" for="{{ $field->name }}-{{ $loop->index }}">
+                                            <label class="form-check-label" for="{{ $field->name ?? '' }}-{{ $loop->index }}">
                                                 {{ $option->label }}
                                             </label>
                                         </div>
@@ -376,17 +376,17 @@
                                     </div>
                                 @break
                                 @case('button')
-                                    <button class="{{ $field->className }}"
+                                    <button class="{{ $field->className ?? ''}}"
                                     @if(isset($field->subtype) && $field->subtype == 'submit')   
-                                        type="{{$field->subtype}}" 
+                                        type="{{$field->subtype ?? ''}}" 
                                     @elseif(isset($field->subtype) && $field->subtype == 'button')
-                                        type="{{$field->subtype}}"
+                                        type="{{$field->subtype ?? ''}}"
                                     @elseif(isset($field->subtype) && $field->subtype == 'reset')
-                                        type="{{$field->subtype}}" 
+                                        type="{{$field->subtype ?? ''}}" 
                                     @else
                                         type="submit"
                                     @endif
-                                    >{{ $field->label }}</button>
+                                    >{{ $field->label ?? '' }}</button>
                                     @break
                                 @default
                                     {{-- Handle other field types if necessary --}}
